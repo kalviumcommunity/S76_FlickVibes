@@ -1,0 +1,12 @@
+{
+  "name": "flickvibes",
+  "version": "1.0.0",
+  "description": "**FlickVibes** 🎬🎦",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["movies", "recommendation", "mood-based"],
+  "author": "FlickVibes",
+  "license": "ISC"
+}
