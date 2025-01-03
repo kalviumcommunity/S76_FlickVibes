@@ -1,14 +1,15 @@
 const express = require('express');
 const app = express();
 
-
-const PORT = process.env.PORT || 3000;
-
-
 app.get('/ping', (req, res) => {
-  res.send('Pong!');
+  res.send('pong');
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  const PORT = 3000;
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
