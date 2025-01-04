@@ -39,3 +39,7 @@ MongoDB: Stores user data, preferences, and recommendations.
 TMDB API: Fetches movie data, including titles, summaries, trailers, and cast details.
 
 OpenAI API: Enhances mood-based recommendations.
+
+## Deployment
+
+The app is live! You can access it here: [FlickVibes on Render]()
