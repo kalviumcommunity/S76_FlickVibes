@@ -40,6 +40,12 @@ TMDB API: Fetches movie data, including titles, summaries, trailers, and cast de
 
 OpenAI API: Enhances mood-based recommendations.
 
+### API Testing with Bruno
+
+The `.bru` files in the `docs.bruno` folder are configured with environment variables for flexibility. 
+To use these files, define the `BASE_URL` environment variable in Bruno, pointing to the deployed app's base URL.
+
+
 ## Deployment
 
 The app is live! You can access it here: [FlickVibes on Render](https://flickvibes.onrender.com)
