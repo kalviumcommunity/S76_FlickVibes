@@ -1,19 +1,30 @@
 const express = require('express');
+const { MongoClient } = require('mongodb');
+require('dotenv').config();
+
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.send("Welcome to FlickVibes! 🎬🎦");
-});
+const client = new MongoClient(process.env.MONGO_URI);
+let dbConnectionStatus = 'Disconnected';
 
-app.get('/ping', (req, res) => {
-  res.send('pong');
-});
-
-if (require.main === module) {
-  const PORT = 3000;
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-  });
+async function connectToDatabase() {
+    try {
+        await client.connect();
+        dbConnectionStatus = 'Connected';
+        console.log('Successfully connected to MongoDB Atlas');
+    } catch (error) {
+        dbConnectionStatus = 'Error Connecting';
+        console.error('Error connecting to MongoDB:', error);
+    }
 }
 
-module.exports = app;
+connectToDatabase();
+
+app.get('/', (req, res) => {
+    res.json({ message: 'Welcome to FlickVibes!', dbStatus: dbConnectionStatus });
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
