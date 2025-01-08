@@ -1,29 +1,31 @@
 const express = require('express');
 const router = express.Router();
-const Movie = require('./schema'); // Ensure this is your Movie model
+const Movie = require('./schema'); 
 
-// CREATE: Add a new movie
+const handleError = (res, error, customMessage = 'An unexpected error occurred') => {
+    console.error(error);  
+    res.status(500).json({ message: customMessage });  
+};
+
 router.post('/movies', async (req, res) => {
     try {
         const newMovie = new Movie(req.body);
         const savedMovie = await newMovie.save();
         res.status(201).json({ message: 'Movie added successfully', data: savedMovie });
     } catch (error) {
-        res.status(400).json({ message: 'Error adding movie', error });
+        handleError(res, error, 'Error adding movie');
     }
 });
 
-// READ: Get all movies
 router.get('/movies', async (req, res) => {
     try {
         const movies = await Movie.find();
         res.status(200).json(movies);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching movies', error });
+        handleError(res, error, 'Error fetching movies');
     }
 });
 
-// UPDATE: Update a movie by ID
 router.put('/movies/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -33,11 +35,10 @@ router.put('/movies/:id', async (req, res) => {
         }
         res.status(200).json({ message: 'Movie updated successfully', data: updatedMovie });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating movie', error });
+        handleError(res, error, 'Error updating movie');
     }
 });
 
-// DELETE: Delete a movie by ID
 router.delete('/movies/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -47,7 +48,7 @@ router.delete('/movies/:id', async (req, res) => {
         }
         res.status(200).json({ message: 'Movie deleted successfully', data: deletedMovie });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting movie', error });
+        handleError(res, error, 'Error deleting movie');
     }
 });
 
