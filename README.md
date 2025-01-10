@@ -48,4 +48,6 @@ To use these files, define the `BASE_URL` environment variable in Bruno, pointin
 
 ## Deployment
 
-The app is live! You can access it here: [FlickVibes on Render](https://flickvibes.onrender.com)
+The app is live! You can access it here: 
+[FlickVibes on Render](https://flickvibes.onrender.com)
+[FlickVibes Front-end](https://loquacious-cendol-c8d818.netlify.app/)
