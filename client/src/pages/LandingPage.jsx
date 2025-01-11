@@ -1,15 +1,24 @@
+
+import { useNavigate } from "react-router-dom";
 import "./LandingPage.css";
 
 const LandingPage = () => {
+  const navigate = useNavigate();
   return (
     <div className="landing-page">
       <header className="navbar" role="banner">
         <div className="logo">FlickVibes</div>
         <nav role="navigation" aria-label="Main Navigation">
           <ul className="nav-links">
-            <li><a href="#features">Features</a></li>
-            <li><a href="#about">About Us</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li>
+              <a href="#features">Features</a>
+            </li>
+            <li>
+              <a href="#about">About Us</a>
+            </li>
+            <li>
+              <a href="#contact">Contact</a>
+            </li>
           </ul>
         </nav>
       </header>
@@ -18,7 +27,13 @@ const LandingPage = () => {
         <section className="hero-section">
           <h1>Welcome to FlickVibes</h1>
           <p>Discover, explore, and vibe with your favorite movies and shows.</p>
-          <button className="cta-button" aria-label="Get Started with FlickVibes">Get Started</button>
+          <button
+            className="cta-button"
+            aria-label="Get Started with FlickVibes"
+            onClick={() => navigate("/movies")}
+          >
+            Get Started
+          </button>
         </section>
 
         <section id="features" className="features-section" aria-labelledby="features-heading">
