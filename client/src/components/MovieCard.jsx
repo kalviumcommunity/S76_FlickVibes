@@ -57,7 +57,7 @@ const MovieCard = () => {
             };
 
             await axios.post('http://localhost:3000/movies', formattedMovie);
-            fetchMovies(); // Refresh the movie list
+            fetchMovies(); 
             setNewMovie({
                 title: '',
                 genre: '',
