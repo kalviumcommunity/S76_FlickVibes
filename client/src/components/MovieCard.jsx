@@ -1,45 +1,57 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import "./MovieCard.css";
 
-const MoviesPage = () => {
-  const dummyMovies = Array(9).fill({
-    title: "Inception",
-    genre: ["Sci-Fi", "Thriller"],
-    releaseYear: 2010,
-    rating: 8.8,
-    streamingPlatforms: ["Netflix", "HBO Max"],
-    cast: [
-      { name: "Leonardo DiCaprio", role: "Cobb" },
-      { name: "Joseph Gordon-Levitt", role: "Arthur" },
-    ],
-    moodTags: ["Mind-Bending", "Suspenseful"],
-    language: "English",
-  });
+const MovieCard = () => {
+    const [movies, setMovies] = useState([]);
+    const [error, setError] = useState(null);
 
-  return (
-    <div className="movies-page">
-      <h1 className="movies-heading">Explore Movies</h1>
-      <div className="movies-grid">
-        {dummyMovies.map((movie, index) => (
-          <div key={index} className="movie-card">
-            <h3>{movie.title}</h3>
-            <p><strong>Genre:</strong> {movie.genre.join(", ")}</p>
-            <p><strong>Rating:</strong> {movie.rating}/10</p>
-            <p><strong>Release Year:</strong> {movie.releaseYear}</p>
-            <p><strong>Streaming Platforms:</strong> {movie.streamingPlatforms.join(", ")}</p>
-            <p><strong>Language:</strong> {movie.language}</p>
-            <div className="cast-info">
-              <strong>Cast:</strong>
-              <ul>
-                {movie.cast.map((actor, idx) => (
-                  <li key={idx}>{actor.name} as {actor.role}</li>
+    useEffect(() => {
+        const fetchMovies = async () => {
+            try {
+                const response = await axios.get("http://localhost:3000/movies");
+                setMovies(response.data);
+            } catch (error) {
+                console.error("Error fetching movies:", error);
+                setError("Failed to load movies. Please try again later.");
+            }
+        };
+
+        fetchMovies();
+    }, []);
+
+    if (error) {
+        return <div className="error-message">{error}</div>;
+    }
+
+    return (
+        <div className="movie-container">
+            <h1 className="heading">Explore Movies</h1>
+            <div className="movie-list">
+                {movies.map((movie) => (
+                    <div className="movie-card" key={movie._id}>
+                        <h2>{movie.title}</h2>
+                        <p><strong>Genre:</strong> {movie.genre.join(", ")}</p>
+                        <p><strong>Release Year:</strong> {movie.releaseYear}</p>
+                        <p><strong>Rating:</strong> {movie.rating} / 10</p>
+                        <p><strong>Streaming Platforms:</strong> {movie.streamingPlatforms.join(", ")}</p>
+                        <div>
+                            <strong>Cast:</strong>
+                            <ul>
+                                {movie.cast.map((member, index) => (
+                                    <li key={index}>
+                                        {member.name} as {member.role}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <p><strong>Mood Tags:</strong> {movie.moodTags.join(", ")}</p>
+                        <p><strong>Language:</strong> {movie.language}</p>
+                    </div>
                 ))}
-              </ul>
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+        </div>
+    );
 };
 
-export default MoviesPage;
+export default MovieCard;
