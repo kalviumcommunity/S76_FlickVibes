@@ -38,14 +38,13 @@
 .movie-card ul,
 .movie-card li {
   font-size: 1em;
-  color: #ffffff; /* Black text inside the box */
+  color: #ffffff; 
   margin: 5px 0;
 }
 
-/* Hover effect for the movie card */
 .movie-card:hover {
-  transform: scale(1.05); /* Pop-in effect */
-  background-color: #1a1a1a; /* Slightly lighter black on hover */
+  transform: scale(1.05); 
+  background-color: #1a1a1a; 
 }
 
 /* List styling for cast */
@@ -56,7 +55,7 @@
 
 .movie-card li {
   margin: 5px 0;
-  color: #ffffff; /* Black text */
+  color: #ffffff; 
 }
 
 /* Error message styling */
@@ -65,4 +64,93 @@
   font-size: 1.2em;
   text-align: center;
   margin: 20px;
+}
+
+.add-movie-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.add-movie-button:hover {
+  background-color: #0056b3;
+}
+
+.movie-container {
+  position: relative;
+  padding: 20px;
+}
+
+.heading {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+
+.form-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  z-index: 1000;
+}
+
+.movie-form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.movie-form input,
+.movie-form textarea {
+  margin-bottom: 15px;
+  padding: 10px;
+  font-size: 1em;
+}
+
+.submit-button,
+.cancel-button {
+  padding: 10px;
+  font-size: 1em;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.submit-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.submit-button:hover {
+  background-color: #218838;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  color: red;
 }
