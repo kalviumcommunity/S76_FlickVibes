@@ -207,8 +207,8 @@ const MovieCard = () => {
                         <p><strong>Release Year:</strong> {movie.releaseYear}</p>
                         <p><strong>Rating:</strong> {movie.rating} / 10</p>
                         <p><strong>Streaming Platforms:</strong> {movie.streamingPlatforms.join(', ')}</p>
-                        <div>
-                            <strong>Cast:</strong>
+                        <div className="cast-section">
+                            <strong >Cast:</strong>
                             <ul>
                                 {movie.cast.map((member, index) => (
                                     <li key={index}>
