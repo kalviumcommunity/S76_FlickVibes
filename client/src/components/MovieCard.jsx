@@ -6,7 +6,9 @@ const MovieCard = () => {
     const [movies, setMovies] = useState([]);
     const [error, setError] = useState(null);
     const [showForm, setShowForm] = useState(false);
-    const [newMovie, setNewMovie] = useState({
+    const [editMode, setEditMode] = useState(false);
+    const [currentMovieId, setCurrentMovieId] = useState(null);
+    const [formData, setFormData] = useState({
         title: '',
         genre: '',
         releaseYear: '',
@@ -17,7 +19,6 @@ const MovieCard = () => {
         language: ''
     });
 
-    // Fetch movies from the server
     const fetchMovies = async () => {
         try {
             const response = await axios.get('http://localhost:3000/movies');
@@ -32,33 +33,40 @@ const MovieCard = () => {
         fetchMovies();
     }, []);
 
-    // Handle form input change
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setNewMovie({ ...newMovie, [name]: value });
+        setFormData({ ...formData, [name]: value });
     };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const castArray = newMovie.cast.split(',').map((item) => {
+            const castArray = formData.cast.split(',').map((item) => {
                 const [name, role] = item.split(':').map((str) => str.trim());
                 return { name, role };
             });
             const formattedMovie = {
-                ...newMovie,
-                genre: newMovie.genre.split(',').map((g) => g.trim()),
-                streamingPlatforms: newMovie.streamingPlatforms.split(',').map((p) => p.trim()),
-                moodTags: newMovie.moodTags.split(',').map((tag) => tag.trim()),
+                ...formData,
+                genre: formData.genre.split(',').map((g) => g.trim()),
+                streamingPlatforms: formData.streamingPlatforms.split(',').map((p) => p.trim()),
+                moodTags: formData.moodTags.split(',').map((tag) => tag.trim()),
                 cast: castArray,
-                releaseYear: parseInt(newMovie.releaseYear),
-                rating: parseFloat(newMovie.rating)
+                releaseYear: parseInt(formData.releaseYear),
+                rating: parseFloat(formData.rating)
             };
 
-            await axios.post('http://localhost:3000/movies', formattedMovie);
-            fetchMovies(); 
-            setNewMovie({
+            if (editMode) {
+                // Update movie
+                await axios.put(`http://localhost:3000/movies/${currentMovieId}`, formattedMovie);
+                setEditMode(false);
+                setCurrentMovieId(null);
+            } else {
+                // Add new movie
+                await axios.post('http://localhost:3000/movies', formattedMovie);
+            }
+
+            fetchMovies();
+            setFormData({
                 title: '',
                 genre: '',
                 releaseYear: '',
@@ -70,8 +78,34 @@ const MovieCard = () => {
             });
             setShowForm(false);
         } catch (error) {
-            console.error('Error adding movie:', error);
-            alert('Failed to add the movie. Please try again.');
+            console.error('Error saving movie:', error);
+            alert('Failed to save the movie. Please try again.');
+        }
+    };
+
+    const handleEdit = (movie) => {
+        setEditMode(true);
+        setCurrentMovieId(movie._id);
+        setFormData({
+            title: movie.title,
+            genre: movie.genre.join(', '),
+            releaseYear: movie.releaseYear,
+            rating: movie.rating,
+            streamingPlatforms: movie.streamingPlatforms.join(', '),
+            cast: movie.cast.map((c) => `${c.name}:${c.role}`).join(', '),
+            moodTags: movie.moodTags.join(', '),
+            language: movie.language
+        });
+        setShowForm(true);
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            await axios.delete(`http://localhost:3000/movies/${id}`);
+            fetchMovies();
+        } catch (error) {
+            console.error('Error deleting movie:', error);
+            alert('Failed to delete the movie. Please try again.');
         }
     };
 
@@ -82,18 +116,18 @@ const MovieCard = () => {
     return (
         <div className="movie-container">
             <h1 className="heading">Explore Movies</h1>
-            <button className="add-movie-button" onClick={() => setShowForm(true)}>
+            <button className="add-movie-button" onClick={() => { setShowForm(true); setEditMode(false); }}>
                 Add Movie
             </button>
             {showForm && (
                 <div className="form-modal">
                     <form onSubmit={handleSubmit} className="movie-form">
-                        <h2>Add New Movie</h2>
+                        <h2>{editMode ? 'Update Movie' : 'Add New Movie'}</h2>
                         <input
                             type="text"
                             name="title"
                             placeholder="Title"
-                            value={newMovie.title}
+                            value={formData.title}
                             onChange={handleInputChange}
                             required
                         />
@@ -101,7 +135,7 @@ const MovieCard = () => {
                             type="text"
                             name="genre"
                             placeholder="Genre (comma-separated)"
-                            value={newMovie.genre}
+                            value={formData.genre}
                             onChange={handleInputChange}
                             required
                         />
@@ -109,7 +143,7 @@ const MovieCard = () => {
                             type="number"
                             name="releaseYear"
                             placeholder="Release Year"
-                            value={newMovie.releaseYear}
+                            value={formData.releaseYear}
                             onChange={handleInputChange}
                             required
                         />
@@ -117,7 +151,7 @@ const MovieCard = () => {
                             type="number"
                             name="rating"
                             placeholder="Rating (0-10)"
-                            value={newMovie.rating}
+                            value={formData.rating}
                             onChange={handleInputChange}
                             required
                         />
@@ -125,14 +159,14 @@ const MovieCard = () => {
                             type="text"
                             name="streamingPlatforms"
                             placeholder="Streaming Platforms (comma-separated)"
-                            value={newMovie.streamingPlatforms}
+                            value={formData.streamingPlatforms}
                             onChange={handleInputChange}
                             required
                         />
                         <textarea
                             name="cast"
                             placeholder="Cast (format: name:role, name:role)"
-                            value={newMovie.cast}
+                            value={formData.cast}
                             onChange={handleInputChange}
                             required
                         ></textarea>
@@ -140,7 +174,7 @@ const MovieCard = () => {
                             type="text"
                             name="moodTags"
                             placeholder="Mood Tags (comma-separated)"
-                            value={newMovie.moodTags}
+                            value={formData.moodTags}
                             onChange={handleInputChange}
                             required
                         />
@@ -148,12 +182,12 @@ const MovieCard = () => {
                             type="text"
                             name="language"
                             placeholder="Language"
-                            value={newMovie.language}
+                            value={formData.language}
                             onChange={handleInputChange}
                             required
                         />
                         <button type="submit" className="submit-button">
-                            Submit
+                            {editMode ? 'Update' : 'Submit'}
                         </button>
                         <button
                             type="button"
@@ -173,8 +207,8 @@ const MovieCard = () => {
                         <p><strong>Release Year:</strong> {movie.releaseYear}</p>
                         <p><strong>Rating:</strong> {movie.rating} / 10</p>
                         <p><strong>Streaming Platforms:</strong> {movie.streamingPlatforms.join(', ')}</p>
-                        <div>
-                            <strong>Cast:</strong>
+                        <div className="cast-section">
+                            <strong >Cast:</strong>
                             <ul>
                                 {movie.cast.map((member, index) => (
                                     <li key={index}>
@@ -185,6 +219,8 @@ const MovieCard = () => {
                         </div>
                         <p><strong>Mood Tags:</strong> {movie.moodTags.join(', ')}</p>
                         <p><strong>Language:</strong> {movie.language}</p>
+                        <button className="edit-button" onClick={() => handleEdit(movie)}>Update</button>
+                        <button className="delete-button" onClick={() => handleDelete(movie._id)}>Delete</button>
                     </div>
                 ))}
             </div>

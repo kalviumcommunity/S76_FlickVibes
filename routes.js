@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Movie = require('./schema'); 
 
+
+
 const handleError = (res, error, customMessage = 'An unexpected error occurred') => {
     console.error(error);  
     res.status(500).json({ message: customMessage });  
