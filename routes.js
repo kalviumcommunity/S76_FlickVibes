@@ -12,7 +12,10 @@ router.post('/movies', async (req, res) => {
     try {
         const { error } = validateMovie(req.body);
         if (error) {
-            return res.status(400).json({ message: error.details[0].message });
+            return res.status(400).json({
+                message: 'Validation failed',
+                details: error.details.map((detail) => detail.message), 
+            });
         }
 
         const newMovie = new Movie(req.body);
@@ -22,6 +25,7 @@ router.post('/movies', async (req, res) => {
         handleError(res, error, 'Error adding movie');
     }
 });
+
 
 router.get('/movies', async (req, res) => {
     try {
