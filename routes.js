@@ -1,16 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const Movie = require('./schema'); 
-
-
+const Movie = require('./schema');
+const { validateMovie } = require('./validation');
 
 const handleError = (res, error, customMessage = 'An unexpected error occurred') => {
-    console.error(error);  
-    res.status(500).json({ message: customMessage });  
+    console.error(error);
+    res.status(500).json({ message: customMessage });
 };
 
 router.post('/movies', async (req, res) => {
     try {
+        const { error } = validateMovie(req.body);
+        if (error) {
+            return res.status(400).json({
+                message: 'Validation failed',
+                details: error.details.map((detail) => detail.message), 
+            });
+        }
+
         const newMovie = new Movie(req.body);
         const savedMovie = await newMovie.save();
         res.status(201).json({ message: 'Movie added successfully', data: savedMovie });
@@ -18,6 +25,7 @@ router.post('/movies', async (req, res) => {
         handleError(res, error, 'Error adding movie');
     }
 });
+
 
 router.get('/movies', async (req, res) => {
     try {
