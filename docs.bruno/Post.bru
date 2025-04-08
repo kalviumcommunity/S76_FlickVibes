@@ -9,3 +9,31 @@ post {
   body: json
   auth: none
 }
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "title": "Interstellar",
+    "genre": ["Sci-Fi", "Adventure"],
+    "releaseYear": 2014,
+    "rating": 9,
+    "streamingPlatforms": ["Netflix", "Amazon Prime"],
+    "cast": [
+      {
+        "name": "Matthew McConaughey",
+        "role": "Cooper"
+      },
+      {
+        "name": "Anne Hathaway",
+        "role": "Brand"
+      }
+    ],
+    "moodTags": ["Mind-Bending", "Emotional"],
+    "language": "English",
+    "created_by": "6523fc9f4c3a5e1f4a8c9b20" 
+  }
+  
+}

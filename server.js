@@ -1,15 +1,31 @@
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
-const routes = require('./routes'); 
 const cors = require("cors");
+const authRoutes = require('./auth');
+const routes = require('./routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors()); 
+// Set JWT secret if not in environment variables
+if (!process.env.JWT_SECRET) {
+    process.env.JWT_SECRET = 'your-secret-key';
+    console.log('Using default JWT secret key');
+} else {
+    console.log('Using JWT secret from environment variables');
+}
+
+// Log JWT secret (first few characters only for security)
+console.log('JWT Secret (first 10 chars):', process.env.JWT_SECRET.substring(0, 10) + '...');
+
+// Middleware
+app.use(cors());
 app.use(express.json());
-app.use(routes); 
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api', routes);
 
 let dbConnectionStatus = 'Disconnected';
 
@@ -35,4 +51,5 @@ app.get('/', (req, res) => {
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+    console.log('JWT Secret:', process.env.JWT_SECRET);
 });
