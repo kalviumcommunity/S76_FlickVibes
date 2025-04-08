@@ -25,8 +25,6 @@ router.post('/register', async (req, res) => {
       { expiresIn: '24h' }
     );
 
-    console.log('Generated token with secret:', process.env.JWT_SECRET.substring(0, 10) + '...');
-
     res.status(201).json({
       message: 'User registered successfully',
       token,
@@ -37,7 +35,7 @@ router.post('/register', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('Registration error:', error.message);
     res.status(500).json({ message: 'Error registering user', error: error.message });
   }
 });
@@ -66,8 +64,6 @@ router.post('/login', async (req, res) => {
       { expiresIn: '24h' }
     );
 
-    console.log('Generated token with secret:', process.env.JWT_SECRET.substring(0, 10) + '...');
-
     res.json({
       message: 'Login successful',
       token,
@@ -78,9 +74,9 @@ router.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('Login error:', error.message);
     res.status(500).json({ message: 'Error logging in', error: error.message });
   }
 });
 
-module.exports = router; 
+module.exports = router;
