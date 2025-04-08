@@ -52,6 +52,11 @@ const movieSchema = new mongoose.Schema({
     type: String, 
     required: [true, 'Language is required'], 
     trim: true 
+  },
+  created_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   }
 });
 

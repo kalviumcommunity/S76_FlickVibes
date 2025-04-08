@@ -1,9 +1,31 @@
-
 import { useNavigate } from "react-router-dom";
 import "./LandingPage.css";
+import { useEffect, useState } from "react";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
+
+  const handleGetStarted = () => {
+    if (isAuthenticated) {
+      navigate("/movies");
+    } else {
+      navigate("/register");
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setIsAuthenticated(false);
+    navigate("/");
+  };
+
   return (
     <div className="landing-page">
       <header className="navbar" role="banner">
@@ -19,6 +41,28 @@ const LandingPage = () => {
             <li>
               <a href="#contact">Contact</a>
             </li>
+            {isAuthenticated ? (
+              <>
+                <li>
+                  <button onClick={handleLogout} className="auth-button">
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <button onClick={() => navigate("/login")} className="auth-button">
+                    Login
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => navigate("/register")} className="auth-button">
+                    Register
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
         </nav>
       </header>
@@ -30,7 +74,7 @@ const LandingPage = () => {
           <button
             className="cta-button"
             aria-label="Get Started with FlickVibes"
-            onClick={() => navigate("/movies")}
+            onClick={handleGetStarted}
           >
             Get Started
           </button>
