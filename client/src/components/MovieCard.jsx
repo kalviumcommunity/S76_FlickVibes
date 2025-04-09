@@ -59,7 +59,8 @@ const MovieCard = () => {
             
             let url = 'http://localhost:3000/api/movies';
             if (selectedUser) {
-                url = `http://localhost:3000/api/movies/user/${selectedUser}`;
+                // url = `http://localhost:3000/api/movies/user/${selectedUser}`;
+                url = `http://localhost:3000/api/sql/movies/user/${selectedUser}`;
             }
             
             console.log('Fetching movies with headers:', headers);

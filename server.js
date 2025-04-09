@@ -17,7 +17,7 @@ if (!process.env.JWT_SECRET) {
 }
 
 // Log JWT secret (first few characters only for security)
-console.log('JWT Secret (first 10 chars):', process.env.JWT_SECRET.substring(0, 10) + '...');
+// console.log('JWT Secret (first 10 chars):', process.env.JWT_SECRET.substring(0, 10) + '...');
 
 // Middleware
 app.use(cors());
@@ -42,6 +42,10 @@ async function connectToDatabase() {
 }
 
 connectToDatabase();
+
+// sql routes
+const sqlRoutes = require('./sql/routes/sqlRoutes');
+app.use('/api', sqlRoutes);
 
 // Basic route
 app.get('/', (req, res) => {

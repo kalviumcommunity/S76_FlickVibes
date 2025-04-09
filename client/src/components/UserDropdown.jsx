@@ -23,7 +23,9 @@ const UserDropdown = ({ onSelectUser }) => {
                 };
                 
                 console.log('Fetching users with headers:', headers);
-                const response = await axios.get('http://localhost:3000/api/users', { headers });
+                // const response = await axios.get('http://localhost:3000/api/users', { headers });
+                const response = await axios.get('http://localhost:3000/api/sql/users', { headers });
+
                 console.log('Users response:', response.data);
                 setUsers(response.data);
             } catch (error) {
@@ -39,11 +41,17 @@ const UserDropdown = ({ onSelectUser }) => {
         fetchUsers();
     }, [navigate]);
 
+    // const handleChange = (e) => {
+    //     const value = e.target.value;
+    //     setSelectedValue(value);
+    //     onSelectUser(value);
+    // };
     const handleChange = (e) => {
         const value = e.target.value;
         setSelectedValue(value);
-        onSelectUser(value);
+        onSelectUser(value); 
     };
+    
 
     return (
         <div className="user-dropdown">
