@@ -45,27 +45,25 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
     const user = await User.findOne({ email });
-    if (!user) {
+    if (!user || !(await user.comparePassword(password))) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Check password
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
-    }
-
-    // Generate JWT token
     const token = jwt.sign(
-      { userId: user._id, name: user.name, email: user.email },
+      { userId: user._id, name: user.name },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 
-    res.json({
-      message: 'Login successful',
+    // Set cookie
+    res.cookie('username', user.name, {
+      httpOnly: true,
+      secure: false, // Set to true in production with HTTPS
+      maxAge: 24 * 60 * 60 * 1000 // 1 day
+    });
+    res.status(200).json({
+      message: "Login successful",
       token,
       user: {
         id: user._id,
@@ -73,9 +71,26 @@ router.post('/login', async (req, res) => {
         email: user.email
       }
     });
-  } catch (error) {
-    console.error('Login error:', error.message);
-    res.status(500).json({ message: 'Error logging in', error: error.message });
+    
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Logout route to clear cookie
+router.post('/logout', (req, res) => {
+  res.clearCookie('username');
+  res.json({ message: 'Logged out successfully' });
+});
+
+// Check cookie route (to show if logged in)
+router.get('/me', (req, res) => {
+  const username = req.cookies.username;
+  if (username) {
+    res.json({ message: 'User is logged in', username });
+  } else {
+    res.status(401).json({ message: 'Not logged in' });
   }
 });
 

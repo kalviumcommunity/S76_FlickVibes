@@ -59,8 +59,8 @@ const MovieCard = () => {
             
             let url = 'http://localhost:3000/api/movies';
             if (selectedUser) {
-                // url = `http://localhost:3000/api/movies/user/${selectedUser}`;
-                url = `http://localhost:3000/api/sql/movies/user/${selectedUser}`;
+                url = `http://localhost:3000/api/movies/user/${selectedUser}`;
+                // url = `http://localhost:3000/api/sql/movies/user/${selectedUser}`;
             }
             
             console.log('Fetching movies with headers:', headers);
@@ -199,16 +199,27 @@ const MovieCard = () => {
                             </button>
                         </li>
                         <li>
-                            <button
-                                onClick={() => {
-                                    localStorage.removeItem('token');
-                                    localStorage.removeItem('user');
-                                    navigate('/');
-                                }}
-                                className="auth-button"
-                            >
-                                Logout
-                            </button>
+                        <button
+  onClick={async () => {
+    try {
+      await fetch('http://localhost:3000/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include', // Important for cookie handling
+      });
+
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Optionally show a message to user
+    }
+  }}
+  className="auth-button"
+>
+  Logout
+</button>
+
                         </li>
                     </ul>
                 </nav>
