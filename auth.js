@@ -51,19 +51,21 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { userId: user._id, name: user.name },
+      { userId: user._id, name: user.name, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 
-    // Set cookie
+    // Set cookie with secure options
     res.cookie('username', user.name, {
       httpOnly: true,
-      secure: false, // Set to true in production with HTTPS
+      secure: false, // Change to true in production with HTTPS
+      sameSite: 'strict', // Prevents CSRF attacks
       maxAge: 24 * 60 * 60 * 1000 // 1 day
     });
+
     res.status(200).json({
-      message: "Login successful",
+      message: 'Login successful',
       token,
       user: {
         id: user._id,
@@ -71,20 +73,24 @@ router.post('/login', async (req, res) => {
         email: user.email
       }
     });
-    
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
 
-// Logout route to clear cookie
+// Logout route
 router.post('/logout', (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('username', {
+    httpOnly: true,
+    secure: false, // Match the cookie set config
+    sameSite: 'strict',
+    path: '/'
+  });
   res.json({ message: 'Logged out successfully' });
 });
 
-// Check cookie route (to show if logged in)
+// Check login status route
 router.get('/me', (req, res) => {
   const username = req.cookies.username;
   if (username) {
