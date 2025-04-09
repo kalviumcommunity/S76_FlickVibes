@@ -19,12 +19,15 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
     try {
       const response = await fetch('http://localhost:3000/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Important for cookie-based auth
         body: JSON.stringify(formData),
       });
 
@@ -34,19 +37,24 @@ const Login = () => {
         throw new Error(data.message || 'Login failed');
       }
 
-      // Store token and user data in localStorage
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify({
-        id: data.user.id,
-        name: data.user.name,
-        email: data.user.email
-      }));
-      
-      // Redirect to MovieCard component
-      navigate('/movies');
+      // Check if data.user exists before accessing its properties
+      if (data.user) {
+        localStorage.setItem('token', data.token); // optional if you're using cookies
+        localStorage.setItem('user', JSON.stringify({
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email
+        }));
+
+        // Redirect to movie page
+        navigate('/movies');
+      } else {
+        throw new Error('User information not found in response.');
+      }
+
     } catch (err) {
-      setError(err.message);
       console.error('Login error:', err);
+      setError(err.message || 'Login failed');
     }
   };
 
@@ -93,4 +101,4 @@ const Login = () => {
   );
 };
 
-export default Login; 
+export default Login;

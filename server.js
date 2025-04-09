@@ -4,6 +4,7 @@ require('dotenv').config();
 const cors = require("cors");
 const authRoutes = require('./auth');
 const routes = require('./routes');
+const CookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,8 +21,13 @@ if (!process.env.JWT_SECRET) {
 // console.log('JWT Secret (first 10 chars):', process.env.JWT_SECRET.substring(0, 10) + '...');
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173', // your frontend origin
+    credentials: true
+  }));
+app.use(CookieParser());
 app.use(express.json());
+
 
 // Routes
 app.use('/api/auth', authRoutes);
